@@ -22,27 +22,6 @@ static void destroy(WaylandState *w_state) {
   delete (w_state);
 }
 
-// Stubs for the NEW-signature entry points declared in `core/virtual-display.hpp`.
-// This LINK_RUST_WAYLAND=ON impl drives the Rust c-bindings directly via the
-// OLD free-function API (below) rather than wrapping a gstreamer plugin element,
-// so these NEW-signature symbols exist only to satisfy the linker for production
-// callers (moonlight-server's libwolf_runner). They are never invoked on the
-// LINK_RUST_WAYLAND=ON path, since that path is now test-only.
-wl_state_ptr create_wayland_display(gstreamer::gst_element_ptr /*wayland_plugin*/,
-                                    const std::string & /*wayland_socket_name*/) {
-  logs::log(logs::warning,
-            "[WAYLAND] NEW-signature create_wayland_display invoked on LINK_RUST_WAYLAND=ON "
-            "build; this path is test-only, returning nullptr");
-  return nullptr;
-}
-
-std::string get_wayland_socket_name(WaylandState & /*w_state*/) {
-  logs::log(logs::warning,
-            "[WAYLAND] get_wayland_socket_name invoked on LINK_RUST_WAYLAND=ON build; "
-            "this path is test-only, returning empty string");
-  return {};
-}
-
 wl_state_ptr create_wayland_display(const immer::array<std::string> &input_devices, const std::string &render_node) {
   logs::log(logs::debug, "[WAYLAND] Creating wayland display");
   auto w_display = display_init(render_node.c_str());
