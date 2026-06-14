@@ -101,14 +101,6 @@ bool add_input_device(WaylandState &w_state, const std::string &device_path) {
   return true;
 }
 
-// Destructors for the input wrappers. The NEW-API path (gst-wayland-display.cpp)
-// releases buttons/keys here via gstreamer messages; the Rust c-bindings path
-// tears down all input state when the underlying WaylandDisplay is destroyed
-// via display_finish, so these can be trivial.
-WaylandMouse::~WaylandMouse() = default;
-WaylandKeyboard::~WaylandKeyboard() = default;
-WaylandTouchScreen::~WaylandTouchScreen() = default;
-
 void WaylandMouse::move(int delta_x, int delta_y) {
   display_pointer_motion(w_state->display, delta_x, delta_y);
 }

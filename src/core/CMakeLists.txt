@@ -14,12 +14,7 @@ file(GLOB CORE_HEADERS CONFIGURE_DEPENDS src/core/*.hpp)
 set(CORE_SRC "")
 
 find_package(PkgConfig)
-# Test-only build configuration. Production Wolf talks to the wayland compositor
-# through the GStreamer plugin (gst-wayland-display.cpp); it does NOT link the
-# Rust C bindings. The [WAYLAND] test suite needs wolf_core built against those
-# bindings, so it configures with LINK_RUST_WAYLAND=ON. Keep this OFF (the
-# default) for every production/image build. See tests/CMakeLists.txt.
-option(LINK_RUST_WAYLAND "Build wolf_core against the Rust wayland C bindings (test suite only)" OFF)
+option(LINK_RUST_WAYLAND "Link to our custom Rust wayland compositor" OFF)
 if (LINK_RUST_WAYLAND AND UNIX AND NOT APPLE)
     pkg_check_modules(libgstwaylanddisplay REQUIRED IMPORTED_TARGET libgstwaylanddisplay>=0.3.0)
     target_link_libraries(wolf_core PUBLIC PkgConfig::libgstwaylanddisplay)

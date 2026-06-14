@@ -29,11 +29,6 @@ if (UNIX AND NOT APPLE)
         find_package(PkgConfig)
         pkg_check_modules(wayland-client REQUIRED IMPORTED_TARGET wayland-client)
 
-        # WaylandScanner and ecm_add_wayland_client_protocol() are provided by
-        # extra-cmake-modules; pull its module path in before using them.
-        find_package(ECM REQUIRED NO_MODULE)
-        list(APPEND CMAKE_MODULE_PATH ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR})
-
         # Add the wayland protocols
         find_package(WaylandScanner REQUIRED QUIET)
         pkg_check_modules(WAYLAND_PROTOCOLS REQUIRED wayland-protocols)
@@ -53,9 +48,6 @@ if (UNIX AND NOT APPLE)
         list(APPEND SRC_LIST
                 "platforms/linux/wayland-client.hpp"
                 "platforms/linux/wayland-display.cpp"
-                # Satisfies moonlight-server's gst-signature wayland entry points,
-                # which wolf_core's Rust-backed (LINK_RUST_WAYLAND=ON) build omits.
-                "platforms/linux/wayland-production-shims.cpp"
         )
         target_link_libraries(wolftests PRIVATE PkgConfig::wayland-client)
     endif ()
