@@ -120,6 +120,14 @@ COPY --from=wolf-builder /usr/local/lib/x86_64-linux-gnu/gstreamer-1.0/* $GST_PL
 # libicuuc soname at runtime.
 COPY --from=wolf-builder /usr/lib64/libicu*.so.* /usr/lib64/
 
+# The gstreamer base (built with meson on Fedora) installs its shared libs to
+# /usr/local/lib64, including libgstcuda-1.0.so.0 -- which our nvcodec-enabled
+# gst-wayland-display plugin links against. That directory is not on the default
+# runtime linker search path, so without this gst-inspect can't dlopen the
+# plugin (libgstcuda-1.0.so.0: cannot open shared object file). Register it and
+# rebuild the ld.so cache so the compositor plugin resolves at runtime.
+RUN echo /usr/local/lib64 > /etc/ld.so.conf.d/gstreamer-local.conf && ldconfig
+
 WORKDIR /wolf
 
 ENV WOLF_CFG_FOLDER=/etc/wolf/cfg
